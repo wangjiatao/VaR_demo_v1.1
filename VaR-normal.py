@@ -430,6 +430,8 @@ for idx_va in range(len(alpha)):
     
 print("All rights reserved & Copyright infringement. ")
 
+
+# In[]
 #option-2(未验证)
 """
 基于copulas构建portfolio的return数据
@@ -475,3 +477,6 @@ for idx_va_op2 in range(len(alpha)):
     VaR_op2=rp_i_op2[alpha_temp_op2]
     print(str(alpha[idx_va_op2])+'_VaR is:'+str(VaR_op2))
     idx_va_op2+=idx_va_op2;
+
+
+# In[]
