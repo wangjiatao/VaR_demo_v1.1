@@ -132,7 +132,7 @@ portP.info()
 portP.shape
 portP.isnull().sum().sort_values(ascending=False)
 print(portP.tail(50))
-#portP.to_csv("/Users/wangjiatao/Documents/项目/模拟/MCMC/cfa-2/portP.csv")
+portP.to_csv("/Users/wangjiatao/Documents/Project_ww/模拟/VaR_demo_v1.1/portP.csv")
 portP.describe()
 
 
