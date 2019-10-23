@@ -430,7 +430,7 @@ for idx_va in range(len(alpha)):
     
 print("All rights reserved & Copyright infringement. ")
 
-#option-2
+#option-2(未验证)
 """
 基于copulas构建portfolio的return数据
 input：10个股票的历史真实数据，设置每个股票的分布是正态的，然后通过copulas来合成portfolio的10元分布
@@ -444,13 +444,34 @@ def pdtolist(df_op2):
     ptl_op2_temp = []
     for idx_pl_op2 in range(lend(coden)):
         ptl_op2_temp=list(df_op2.iloc[idx_pl_op2,:])
-        ptl_op2=[plt_op2,ptl_op2_temp];
+        ptl_op2=[plt_op2,ptl_op2_temp]\
+        idx_pl_op2+=idx_pl_op2;
     return ptl_op2
 
 portP_op2=pdtolist(portP_2)
 portP_op2.describe()
 
 cop=pyCopula(portP_2)
-samples_2=cop.gendata(1000)
-samples_2=np.sort(samples_2)
-sample.head(100)
+sampsize=1000
+samps_op2=cop.gendata(sampsize)  #得到1000组基于copulas分布的抽样，list类型
+
+samps_op2=np.array(samps_op2)
+samps_op2=samps_op2.reshape(10,1000)
+
+idx_rp_op2=0
+rp_i_op2=[]
+for idx_rp_op2 in range(len(sampsize)):
+    rp_i_op2=samps_op2[:,idx_rp_op2]
+    rp_i_op2_temp=returnP(rp_i_op2,weightP)
+    rp_i_op2=np.append(rp_i_op2,rp_i_op2_temp)
+    idx_rp_op2+=idx_rp_op2;
+
+rp_i_op2=np.sort(rp_i_op2)
+
+alpha=[0.01,0.05,0.1] #VaR的1%分位数
+idx_va_op2=0
+for idx_va_op2 in range(len(alpha)):
+    alpha_temp_op2=int(rp_i_op2*(alpha[idx_va_op2]))
+    VaR_op2=rp_i_op2[alpha_temp_op2]
+    print(str(alpha[idx_va_op2])+'_VaR is:'+str(VaR_op2))
+    idx_va_op2+=idx_va_op2;
