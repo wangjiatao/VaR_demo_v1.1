@@ -21,7 +21,7 @@ pro=ts.pro_api()
 #list_50=ts.get_sz50s()
 #list_50=pd.DataFrame(list_50)
 #tushare关闭读取上证50成分股的权限，所以通过Excel载入
-list_50=pd.read_excel("/Users/wangjiatao/Documents/Project_ww/模拟/MCMC/sz50index.xlsx")
+list_50=pd.read_excel("/Users/wangjiatao/Documents/Project_ww/模拟/VaR_demo_v1.1/sz50index.xlsx")
 print(list_50)
 
 # In[]
@@ -139,7 +139,7 @@ portP.describe()
 # In[]
 #修正异常值
 print('outliers information:')
-portP[(np.abs(portP)>10).any(1)]#展示出有异常值的索引
+portP[(np.abs(portP)>10).any(1)]    #展示出有异常值的索引
 idx_out1=0
 for idx_out1 in range(10):
     print(portP.iloc[:,idx_out1].describe())
@@ -147,13 +147,14 @@ for idx_out1 in range(10):
 
 # In[]
 #np.sign(portP)
-portP[np.abs(portP)>10]=np.sign(portP)*10#异常值替换为10或-10
+portP[np.abs(portP)>10]=np.sign(portP)*10    #异常值替换为10或-10
 print('after flitering,outliers information')
 portP[(np.abs(portP)>10).any(1)]
 idx_out2=0
 for idx_out2 in range(10):
     print(portP.iloc[:,idx_out2].describe())
     idx_out2+=idx_out2;
+
 # In[]
 #绘图
 fig,axes =plt.subplots(5,2,figsize=(10,4))
@@ -429,3 +430,27 @@ for idx_va in range(len(alpha)):
     
 print("All rights reserved & Copyright infringement. ")
 
+#option-2
+"""
+基于copulas构建portfolio的return数据
+input：10个股票的历史真实数据，设置每个股票的分布是正态的，然后通过copulas来合成portfolio的10元分布
+对portfolio的10元分布进行抽样，抽样500次，得到3个VaR
+"""
+from copula import pyCopula
+portP_2=portP
+idx_pl_op2=0
+def pdtolist(df_op2):
+    ptl_op2 = []
+    ptl_op2_temp = []
+    for idx_pl_op2 in range(lend(coden)):
+        ptl_op2_temp=list(df_op2.iloc[idx_pl_op2,:])
+        ptl_op2=[plt_op2,ptl_op2_temp];
+    return ptl_op2
+
+portP_op2=pdtolist(portP_2)
+portP_op2.describe()
+
+cop=pyCopula(portP_2)
+samples_2=cop.gendata(1000)
+samples_2=np.sort(samples_2)
+sample.head(100)
