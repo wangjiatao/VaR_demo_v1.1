@@ -1,0 +1,167 @@
+# read me
+
+## 项目
+
+[![996.icu](https://img.shields.io/badge/link-996.icu-red.svg)](https://996.icu)
+
+**portfolio-VaR**
+
+top 50，随机选择10个stock，建立组合，并根据过去3年 or 5年的data分析VaR
+
+## 架构 
+
+### 选择股票
+
+1. 上证50指数，随机选择10个，减少停牌相关的影响，让10个股票data是同期的
+2. 本步骤建立函数，自动选择，并自动带入股票代码，并采集数据通过tushare，~~残疾收盘价~~
+3. ~~check是否有停牌，通过绘图~~
+
+### 数据预处理
+
+1. 对收盘价：
+   1. 建立return数据集
+   2. 验证偏度+峰度
+   3. ~~建立log return数据集~~
+   4. ~~验证偏度+峰度~~
+
+2. 检查数据对齐，日期对齐
+
+### 构建分布基于参数
+
+1. 基于正态分布建立10个股票的分布，取得参数——通过函数进行
+2. 确定weighted。 可选：根据项目时间预算确定是可选权重还是等权重
+
+
+
+###计算组合的VaR
+
+1. 根据股票的各自分布采样并进行模特卡罗模拟
+
+2. 得到结果分布，并输出VaR的结果。置信水平可选。
+
+------
+
+# 拓扑结构图
+
+```mermaid
+graph TD
+a[R_i]
+b[sigma_i]
+d[W]
+e[Rp]
+g[distribution_i]
+h[sample from distribution of stock_i]
+i[samples of R_i]
+j[iter 1000 times]
+k[portfolio return distribution]
+l[calculate quantile]
+al[alpha]
+va[VaR]
+
+a-->g
+b-->g
+g-->h
+h-->i
+i-->e
+d-->e
+e-->j
+j-->k
+k-->l
+al-->l
+l-->va
+
+```
+
+---
+
+## 思路
+
+1. 个股return的mean & sigma2 —>建立个股的分布 —>随机抽样 —>计算组合的return —>排序并计算分位数
+2. 基于个股的return计算portfolio的return —>基于个股cov计算portfolio的variance —> 参数法计算VaR
+3. 从个股到组合的过程，务必考虑cov的影响，问题在于哪里考虑cov，是基于cov建立n个个股分布，还是在构建组合分布的时候考虑cov，形成N元联合分布。
+
+Option_1：
+
+```mermaid
+graph LR
+mi[m_i]
+si[sigm2_i]
+diri[distribution_i]
+sam[sampling]
+rp[R_p]
+w[weight]
+qu[quantile]
+
+
+mi-->diri
+si-->diri
+diri-->sam
+sam-->rp
+w-->rp
+rp--sort-->qu
+```
+
+Option_2：
+
+~~~mermaid
+graph LR
+ri[R_i]
+rp[R_p]
+ci[Cov_i]
+vp[sigma2P]
+w[weight]
+dirp[distribution_p]
+pa[parameters]
+var[VaR]
+dir[fx]
+ri-->rp
+ci-->vp
+w-->vp
+rp-->dir
+vp-->dir
+dir--normal-->dirp
+dirp-->pa
+pa-->var
+by[beyas method bunch]
+dir-->by
+npd[nonparameter-distribution]
+by-->npd
+mc[monte_carlo_simulation]
+npd-->mc
+
+~~~
+
+Option_3: time series&time windows
+
+~~~mermaid
+graph LR
+tw[time windows]
+rit[return_i_t]
+sit[sigma2_i_t]
+cit[Cov_i_t]
+w[weight]
+prt[Rp_t]
+pst[Sigma2p_t]
+rit-->prt
+w-->prt
+cit-->pst
+sit-->pst
+sd[distribition generated function]
+prt-->sd
+pst-->sd
+nor[normal]
+sd-->nor
+pa[parameters]
+mc[monte-carlo-simulation]
+nor-->pa
+sd-->mc
+var[VaR]
+pa-->var
+mc-->var
+tw-->sd
+rb[RNN & beyas brunch]
+rb-->sd
+~~~
+
+
+
