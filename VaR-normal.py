@@ -14,14 +14,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats
 
-ts.set_token('8b2730c06a705fdef18efc57221134aabb464368af7a7cfa4a5efd70')
+ts.set_token('*********')
 pro=ts.pro_api()
 # In[]
 #载入上证50成分股清单
 #list_50=ts.get_sz50s()
 #list_50=pd.DataFrame(list_50)
 #tushare关闭读取上证50成分股的权限，所以通过Excel载入
-list_50=pd.read_excel("/Users/wangjiatao/Documents/Project_ww/模拟/VaR_demo_v1.1/sz50index.xlsx")
+list_50=pd.read_excel("sz50index.xlsx")
 print(list_50)
 
 # In[]
